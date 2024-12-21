@@ -1,10 +1,8 @@
-FROM ubuntu:18.04
+FROM ubuntu:24.04
 
-ARG UID=1000
+RUN groupadd riscv && useradd -m -g riscv riscv
 
-RUN addgroup riscv && useradd -m -g riscv -u ${UID} riscv
-
-ENV PATH /opt/riscv/bin:${PATH}
+ENV PATH=/opt/riscv/bin:${PATH}
 
 RUN apt-get update
 RUN apt-get install -y git
@@ -31,7 +29,10 @@ RUN apt-get install -y \
     zlib1g-dev  \
     libexpat-dev \
     python3 \
-    python2.7
+    qemu-system-misc \
+    opensbi \
+    u-boot-qemu \
+    qemu-utils
 
 RUN cd /riscv/ && ./configure --prefix=/opt/riscv --enable-multilib
 RUN cd /riscv/ && make linux -j4
